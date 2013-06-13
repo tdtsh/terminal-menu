@@ -4,11 +4,9 @@
     "description": "retro ansi terminal menus for serious 80s technicolor business",
     "main": "index.js",
     "dependencies": {
-        "x256": "~0.0.1",
-        "through": "~2.3.4",
         "resumer": "~0.0.0",
-        "textlogin": "~0.0.7",
-        "charm": "~0.1.2"
+        "charm": "~0.1.2",
+        "inherits": "~2.0.0"
     },
     "scripts": {
         "test": "tap test/*.js"
