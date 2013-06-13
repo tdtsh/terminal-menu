@@ -1,6 +1,6 @@
 # terminal-menu
 
-retro colorful ansi terminal menus for serious 80s technicolor business
+retro ansi terminal menus for serious 80s technicolor business
 
 ![terminal menu](http://substack.net/images/screenshots/terminal_menu.png)
 
