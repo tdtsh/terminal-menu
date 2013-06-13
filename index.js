@@ -16,6 +16,11 @@ function Menu (opts) {
     self.items = [];
     self.lines = {};
     self.selected = 0;
+    self.colors = {
+        fg: opts.fg || 'white',
+        bg: opts.bg || 'blue'
+    };
+    
     self.padding = opts.padding || {
         left: 2,
         right: 2,
@@ -36,7 +41,7 @@ function Menu (opts) {
         x: self.width + self.padding.left + self.padding.right
     };
     
-    self.charm = createCharm();
+    self.charm = opts.charm || createCharm();
     self.stream = self.charm.pipe(resumer());
     self.charm.display('reset');
     self.charm.display('bright');
@@ -101,8 +106,8 @@ Menu.prototype.reset = function () {
 };
 
 Menu.prototype.write = function (msg) {
-    this.charm.background('magenta');
-    this.charm.foreground('white');
+    this.charm.background(this.colors.bg);
+    this.charm.foreground(this.colors.fg);
     this._fillLine(this.y);
     
     var parts = msg.split('\n');
@@ -136,12 +141,12 @@ Menu.prototype._drawRow = function (index) {
     this.charm.position(item.x, item.y);
     
     if (this.selected === index) {
-        this.charm.background('white');
-        this.charm.foreground('magenta');
+        this.charm.background(this.colors.fg);
+        this.charm.foreground(this.colors.bg);
     }
     else {
-        this.charm.background('magenta');
-        this.charm.foreground('white');
+        this.charm.background(this.colors.bg);
+        this.charm.foreground(this.colors.fg);
     }
     
     this.charm.write(
