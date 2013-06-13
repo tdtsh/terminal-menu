@@ -14,7 +14,24 @@ function Menu (opts) {
     self.y = opts.y || 1;
     self.init = { x: self.x, y: self.y };
     self.items = [];
+    self.lines = {};
     self.selected = 0;
+    self.padding = opts.padding || {
+        left: 2,
+        right: 2,
+        top: 1,
+        bottom: 1
+    };
+    if (typeof self.padding === 'number') {
+        self.padding = {
+            left: self.padding,
+            right: self.padding,
+            top: self.padding,
+            bottom: self.padding
+        };
+    }
+    self.x += self.padding.left;
+    self.y += self.padding.top;
     
     self.charm = createCharm();
     self.stream = self.charm.pipe(resumer());
@@ -48,7 +65,19 @@ Menu.prototype.add = function (label) {
         y: this.y,
         label: label
     });
+    this._fillLine(this.y);
     this.y ++;
+};
+
+Menu.prototype._fillLine = function (y) {
+    if (!this.lines[y]) {
+        this.charm.position(this.init.x, y);
+        this.charm.write(Array(
+            1 + this.width
+            + this.padding.left + this.padding.right
+        ).join(' '));
+        this.lines[y] = true;
+    }
 };
 
 Menu.prototype.close = function () {
@@ -63,6 +92,7 @@ Menu.prototype.reset = function () {
 Menu.prototype.write = function (msg) {
     this.charm.background('magenta');
     this.charm.foreground('white');
+    this._fillLine(this.y);
     
     var parts = msg.split('\n');
     
@@ -72,7 +102,8 @@ Menu.prototype.write = function (msg) {
             this.charm.write(parts[i]);
         }
         if (i !== parts.length - 1) {
-            this.x = this.init.x;
+            this.x = this.init.x + this.padding.left;
+            this._fillLine(this.y);
             this.y ++;
         }
     }
