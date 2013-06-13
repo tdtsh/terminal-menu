@@ -1,4 +1,5 @@
 var menu = require('../')({ width: 30 });
+menu.reset();
 menu.write('NODECONF STREAMS 2013 SESSION\n');
 menu.write('-----------------------------\n');
 

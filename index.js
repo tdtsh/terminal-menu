@@ -1,6 +1,7 @@
 var createCharm = require('charm');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
+var resumer = require('resumer');
 
 module.exports = function (opts) {
     return new Menu(opts || {});
@@ -11,19 +12,25 @@ function Menu (opts) {
     self.width = opts.width || 50;
     self.x = opts.x || 1;
     self.y = opts.y || 1;
+    self.init = { x: self.x, y: self.y };
     self.items = [];
     self.selected = 0;
     
     self.charm = createCharm();
-    self.charm.cursor(false);
-    process.on('exit', function () { self.charm.cursor(true) });
+    self.stream = self.charm.pipe(resumer());
+    self.charm.display('reset');
+    self.charm.display('bright');
     
-    process.nextTick(function () {
-        for (var i = 0; i < self.items.length; i++) self._drawRow(i);
-    });
     self._ondata = function (buf) {
         self._ondataHandler(buf);
     };
+    
+    process.nextTick(function () {
+        self.charm.cursor(false);
+        process.on('exit', function () { self.charm.cursor(true) });
+        self._draw();
+    });
+    
     process.stdin.on('data', self._ondata);
     process.stdin.setRawMode(true);
     process.stdin.resume();
@@ -32,17 +39,10 @@ function Menu (opts) {
 inherits(Menu, EventEmitter);
 
 Menu.prototype.createStream = function () {
-    return this.charm;
+    return this.stream;
 };
 
 Menu.prototype.add = function (label) {
-    this.charm.display('reset');
-    this.charm.display('bright');
-    this.charm.background('magenta');
-    this.charm.foreground('white');
-    this.charm.position(this.x, this.y);
-    this.charm.write(label);
-    
     this.items.push({
         x: this.x,
         y: this.y,
@@ -61,17 +61,25 @@ Menu.prototype.reset = function () {
 };
 
 Menu.prototype.write = function (msg) {
+    this.charm.background('magenta');
+    this.charm.foreground('white');
+    
     var parts = msg.split('\n');
     
     for (var i = 0; i < parts.length; i++) {
         if (parts[i].length) {
+            this.charm.position(this.x, this.y);
             this.charm.write(parts[i]);
         }
         if (i !== parts.length - 1) {
+            this.x = this.init.x;
             this.y ++;
-            this.charm.position(this.x, this.y);
         }
     }
+};
+
+Menu.prototype._draw = function () {
+    for (var i = 0; i < this.items.length; i++) this._drawRow(i);
 };
 
 Menu.prototype._drawRow = function (index) {
@@ -89,7 +97,7 @@ Menu.prototype._drawRow = function (index) {
     }
     
     this.charm.write(
-        '  ' + item.label
+        item.label
         + Array(Math.max(0, this.width - item.label.length)).join(' ')
     );
 };
