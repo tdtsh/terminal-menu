@@ -32,6 +32,9 @@ function Menu (opts) {
     }
     self.x += self.padding.left;
     self.y += self.padding.top;
+    self.size = {
+        x: self.width + self.padding.left + self.padding.right
+    };
     
     self.charm = createCharm();
     self.stream = self.charm.pipe(resumer());
@@ -72,10 +75,7 @@ Menu.prototype.add = function (label) {
 Menu.prototype._fillLine = function (y) {
     if (!this.lines[y]) {
         this.charm.position(this.init.x, y);
-        this.charm.write(Array(
-            1 + this.width
-            + this.padding.left + this.padding.right
-        ).join(' '));
+        this.charm.write(Array(1 + this.size.x).join(' '));
         this.lines[y] = true;
     }
 };
@@ -110,6 +110,9 @@ Menu.prototype.write = function (msg) {
 };
 
 Menu.prototype._draw = function () {
+    for (var i = 0; i < this.padding.top; i++) {
+        this._fillLine(this.init.y + i);
+    }
     for (var i = 0; i < this.items.length; i++) this._drawRow(i);
 };
 
