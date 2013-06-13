@@ -5,9 +5,7 @@ menu.write('-----------------------------\n');
 
 menu.add('NEW GAME');
 menu.add('LOAD GAME');
-menu.add('EXIT', process.exit);
-
-menu.write('                             \n');
+menu.add('EXIT', menu.close.bind(menu));
 
 menu.on('select', function (index) {
     

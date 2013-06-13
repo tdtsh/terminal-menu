@@ -47,7 +47,6 @@ function Menu (opts) {
     
     process.nextTick(function () {
         self.charm.cursor(false);
-        process.on('exit', function () { self.charm.cursor(true) });
         self._draw();
     });
     
@@ -62,7 +61,14 @@ Menu.prototype.createStream = function () {
     return this.stream;
 };
 
-Menu.prototype.add = function (label) {
+Menu.prototype.add = function (label, cb) {
+    var index = this.items.length;
+    if (cb) {
+        this.on('select', function (x, ix) {
+            if (ix === index) cb(x, ix);
+        });
+    }
+    
     this.items.push({
         x: this.x,
         y: this.y,
@@ -83,6 +89,11 @@ Menu.prototype._fillLine = function (y) {
 Menu.prototype.close = function () {
     process.stdin.setRawMode(false);
     process.stdin.removeListener('data', this._ondata);
+    this.charm.cursor(true);
+    this.charm.display('reset');
+    this.charm.position(1, this.y + 1);
+    this.charm.end();
+    process.stdin.destroy();
 };
 
 Menu.prototype.reset = function () {
@@ -114,6 +125,9 @@ Menu.prototype._draw = function () {
         this._fillLine(this.init.y + i);
     }
     for (var i = 0; i < this.items.length; i++) this._drawRow(i);
+    for (var i = 0; i < this.padding.bottom; i++) {
+        this._fillLine(this.y + i);
+    }
 };
 
 Menu.prototype._drawRow = function (index) {
