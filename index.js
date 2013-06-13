@@ -175,6 +175,6 @@ Menu.prototype._ondataHandler = function ondata (buf) {
         process.exit();
     }
     else if (codes === '13') { // enter
-        this.emit('select', this.items[this.selected], this.selected);
+        this.emit('select', this.items[this.selected].label, this.selected);
     }
 };

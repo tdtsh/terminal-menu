@@ -1,13 +1,19 @@
-var menu = require('../')({ width: 30, x: 4, y: 2 });
+var menu = require('../')({ width: 29, x: 4, y: 2 });
 menu.reset();
-menu.write('NODECONF STREAMS 2013 SESSION\n');
-menu.write('-----------------------------\n');
+menu.write('SERIOUS BUSINESS TERMINAL\n');
+menu.write('-------------------------\n');
 
-menu.add('NEW GAME');
-menu.add('LOAD GAME');
-menu.add('EXIT', menu.close.bind(menu));
+menu.add('ADD TRANSACTION INVOICE');
+menu.add('BUSINESS INTELLIGENCE');
+menu.add('ACCOUNTS PAYABLE');
+menu.add('LEDGER BOOKINGS');
+menu.add('INDICATOR CHART METRICS');
+menu.add('BACKUP DATA TO FLOPPY DISK');
+menu.add('RESTORE FROM FLOPPY DISK');
+menu.add('EXIT');
 
-menu.on('select', function (index) {
-    
+menu.on('select', function (label) {
+    menu.close();
+    console.log('SELECTED: ' + label);
 });
 menu.createStream().pipe(process.stdout);
