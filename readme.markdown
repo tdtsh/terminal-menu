@@ -48,6 +48,9 @@ Create a menu with `opts`:
 * `opts.padding.top` - top padding in rows
 * `opts.padding.bottom` - bottom padding in rows
 
+The menu can be driven around with the arrow keys and j/k, vi-style.
+To quit out of the menu, hit `^C` or `q`.
+
 ## menu.add(label)
 
 Create a new selectable menu item with the string `label`.
