@@ -51,6 +51,7 @@ function Menu (opts) {
     };
     
     process.nextTick(function () {
+        self._ticked = true;
         self.charm.cursor(false);
         self._draw();
     });
@@ -91,6 +92,22 @@ Menu.prototype._fillLine = function (y) {
     }
 };
 
+Menu.prototype.jump = function (name) {
+    var index = typeof name === 'number'
+        ? name
+        : this.items
+            .map(function (item) { return item.label })
+            .indexOf(name)
+    ;
+    if (index < 0) return;
+    var prev = this.selected;
+    this.selected = index;
+    if (this._ticked) {
+        this._drawRow(prev);
+        this._drawRow(index);
+    }
+};
+
 Menu.prototype.close = function () {
     process.stdin.setRawMode(false);
     process.stdin.removeListener('data', this._ondata);
@@ -98,7 +115,6 @@ Menu.prototype.close = function () {
     this.charm.display('reset');
     this.charm.position(1, this.y + 1);
     this.charm.end();
-    process.stdin.pause();
 };
 
 Menu.prototype.reset = function () {
