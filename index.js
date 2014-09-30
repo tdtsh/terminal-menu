@@ -109,7 +109,10 @@ Menu.prototype.jump = function (name) {
     }
 };
 
-Menu.prototype.close = function () {
+Menu.prototype.close = function (keepalive) {
+    if (!keepalive) {
+      process.stdin.setRawMode(false);
+    }
     process.stdin.removeListener('data', this._ondata);
     this.charm.cursor(true);
     this.charm.display('reset');
