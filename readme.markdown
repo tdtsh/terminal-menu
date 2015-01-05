@@ -7,7 +7,8 @@ retro ansi terminal menus for serious 80s technicolor business
 # example
 
 ``` js
-var menu = require('../')({ width: 29, x: 4, y: 2 });
+var Menu = require('terminal-menu');
+var menu = Menu({ width: 29, x: 4, y: 2 });
 menu.reset();
 menu.write('SERIOUS BUSINESS TERMINAL\n');
 menu.write('-------------------------\n');
@@ -19,6 +20,7 @@ menu.add('LEDGER BOOKINGS');
 menu.add('INDICATOR CHART METRICS');
 menu.add('BACKUP DATA TO FLOPPY DISK');
 menu.add('RESTORE FROM FLOPPY DISK');
+menu.add('欢迎来到substack的编码世界');
 menu.add('EXIT');
 
 menu.on('select', function (label) {
