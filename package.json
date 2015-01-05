@@ -1,6 +1,6 @@
 {
     "name": "terminal-menu",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "description": "retro ansi terminal menus for serious 80s technicolor business",
     "main": "index.js",
     "dependencies": {
