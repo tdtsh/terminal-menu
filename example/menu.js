@@ -6,7 +6,12 @@ menu.write('-------------------------\n');
 
 menu.add('ADD TRANSACTION INVOICE');
 menu.add('BUSINESS INTELLIGENCE');
-menu.add('ACCOUNTS PAYABLE');
+menu.add('ACCOUNTS PAYABLE', function (label, index) {
+    menu.close();
+    console.log('LABEL=', label);
+    console.log('INDEX=', index);
+    process.exit();
+});
 menu.add('LEDGER BOOKINGS');
 menu.add('INDICATOR CHART METRICS');
 menu.add('BACKUP DATA TO FLOPPY DISK');
