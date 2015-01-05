@@ -49,6 +49,7 @@ Create a menu with `opts`:
 * `opts.padding.right` - right padding in columns
 * `opts.padding.top` - top padding in rows
 * `opts.padding.bottom` - bottom padding in rows
+* `opts.selected` - set the selected element by its index
 
 The menu can be driven around with the arrow keys and j/k, vi-style.
 To quit out of the menu, hit `^C` or `q`.
@@ -74,6 +75,13 @@ Reset the terminal, clearing all contents.
 Unregister all listeners and put the terminal back to its original state.
 
 Set `opts.keepalive` to `true` to keep raw mode enabled on `process.stdin`.
+
+# events
+
+## menu.on('select', function (label, index) {})
+
+When the user selects a label, this event fires with the label string and menu
+index.
 
 # install
 
