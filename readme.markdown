@@ -69,9 +69,11 @@ Return the stream to be piped to a terminal.
 
 Reset the terminal, clearing all contents.
 
-## menu.close()
+## menu.close(opts={})
 
 Unregister all listeners and put the terminal back to its original state.
+
+Set `opts.keepalive` to `true` to keep raw mode enabled on `process.stdin`.
 
 # install
 
