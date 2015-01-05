@@ -59,9 +59,12 @@ Create a menu with `opts`:
 The menu can be driven around with the arrow keys and j/k, vi-style.
 To quit out of the menu, hit `^C` or `q`.
 
-## menu.add(label[, callback])
+## menu.add(label, cb)
 
-Create a new selectable menu item with the string `label`. The callback is optional.
+Create a new selectable menu item with the string `label`.
+
+Optionally give a callback `cb(label, index)` that will fire with the label
+string and index when selected.
 
 ## menu.write(msg)
 
