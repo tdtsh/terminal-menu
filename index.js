@@ -208,6 +208,8 @@ Menu.prototype._ondata = function ondata (buf) {
             bytes.shift();
         }
         else if (/^(13|10)\b/.test(codes)) { // enter
+            this.charm.position(1, this.items[this.items.length-1].y + 2);
+            this.charm.display('reset');
             this.emit('select', this.items[this.selected].label, this.selected);
             bytes.shift();
         }
