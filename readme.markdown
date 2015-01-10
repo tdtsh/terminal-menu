@@ -56,7 +56,9 @@ Create a menu with `opts`:
 * `opts.padding.bottom` - bottom padding in rows
 * `opts.selected` - set the selected element by its index
 
-The menu can be driven around with the arrow keys and j/k, vi-style.
+The menu can be driven around with the arrow keys, vi-style j/k, and emacs-style
+C-n/C-p.
+
 To quit out of the menu, hit `^C` or `q`.
 
 ## menu.add(label, cb)
