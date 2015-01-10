@@ -18,6 +18,7 @@ var server = net.createServer(function (stream) {
     menu.add('EXIT');
     
     menu.on('select', function (label) {
+        menu.close();
         stream.end('\nTHE ONLY WINNING MOVE IS NOT TO PLAY.\n');
     });
     stream.pipe(menu.createStream()).pipe(stream);
