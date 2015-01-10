@@ -68,10 +68,6 @@ function Menu (opts) {
         self.charm.cursor(false);
         self._draw();
     });
-    
-    //process.stdin.on('data', self._ondata);
-    //process.stdin.setRawMode(true);
-    //process.stdin.resume();
 };
 
 Menu.prototype.createStream = function () {
@@ -121,9 +117,6 @@ Menu.prototype.jump = function (name) {
 
 Menu.prototype.close = function (opts) {
     if (!opts) opts = {};
-    if (!opts.keepalive) {
-        process.stdin.setRawMode(false);
-    }
     this._input.end();
     this.charm.cursor(true);
     this.charm.display('reset');
