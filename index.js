@@ -182,27 +182,35 @@ Menu.prototype._drawRow = function (index) {
 };
 
 Menu.prototype._ondata = function ondata (buf) {
-    var codes = [].join.call(buf, '.');
-    if (codes === '27.91.65' || codes === '27.79.65' || codes === '107') {
-    // up || up (iOS) || k
-        this.selected = (this.selected - 1 + this.items.length)
-            % this.items.length
-        ;
-        this._drawRow(this.selected + 1);
-        this._drawRow(this.selected);
-    }
-    else if (codes === '27.91.66' || codes === '27.79.66' || codes === '106') {
-    // down || down (iOS) || j
-        this.selected = (this.selected + 1) % this.items.length;
-        this._drawRow(this.selected - 1);
-        this._drawRow(this.selected);
-    }
-    else if (codes === '3' || codes == '113') { // ^C || q
-        this._input.end();
-        this._output.end();
-        this.charm.reset();
-    }
-    else if (codes === '13') { // enter
-        this.emit('select', this.items[this.selected].label, this.selected);
+    var bytes = [].slice.call(buf);
+    while (bytes.length) {
+        var codes = [].join.call(bytes, '.');
+        if (/^(27.91.65|27,79.65|107)\b/.test(codes)) { // up or k
+            this.selected = (this.selected - 1 + this.items.length)
+                % this.items.length
+            ;
+            this._drawRow(this.selected + 1);
+            this._drawRow(this.selected);
+            if (/^107\b/.test(codes)) bytes.shift()
+            else bytes.splice(0, 3);
+        }
+        if (/^(27.91.66|27.79.66|106)\b/.test(codes)) { // down or j
+            this.selected = (this.selected + 1) % this.items.length;
+            this._drawRow(this.selected - 1);
+            this._drawRow(this.selected);
+            if (/^106\b/.test(codes)) bytes.shift()
+            else bytes.splice(0, 3);
+        }
+        else if (/^(3|113)/.test(codes)) { // ^C or q
+            this._input.end();
+            this._output.end();
+            this.charm.reset();
+            bytes.shift();
+        }
+        else if (/^(13|10)\b/.test(codes)) { // enter
+            this.emit('select', this.items[this.selected].label, this.selected);
+            bytes.shift();
+        }
+        else bytes.shift();
     }
 };
