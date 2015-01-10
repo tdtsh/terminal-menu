@@ -188,7 +188,7 @@ Menu.prototype._ondata = function ondata (buf) {
     var bytes = [].slice.call(buf);
     while (bytes.length) {
         var codes = [].join.call(bytes, '.');
-        if (/^(27.91.65|27,79.65|107)\b/.test(codes)) { // up or k
+        if (/^(27.91.65|27,79.65|107|16)\b/.test(codes)) { // up or k
             this.selected = (this.selected - 1 + this.items.length)
                 % this.items.length
             ;
@@ -197,7 +197,7 @@ Menu.prototype._ondata = function ondata (buf) {
             if (/^107\b/.test(codes)) bytes.shift()
             else bytes.splice(0, 3);
         }
-        if (/^(27.91.66|27.79.66|106)\b/.test(codes)) { // down or j
+        if (/^(27.91.66|27.79.66|106|14)\b/.test(codes)) { // down or j
             this.selected = (this.selected + 1) % this.items.length;
             this._drawRow(this.selected - 1);
             this._drawRow(this.selected);
