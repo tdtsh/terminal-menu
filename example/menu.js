@@ -23,4 +23,9 @@ menu.on('select', function (label) {
     menu.close();
     console.log('SELECTED: ' + label);
 });
-menu.createStream().pipe(process.stdout);
+process.stdin.pipe(menu.createStream()).pipe(process.stdout);
+
+process.stdin.setRawMode(true);
+menu.on('close', function () {
+    process.stdin.setRawMode(false);
+});

@@ -1,12 +1,16 @@
 var createCharm = require('charm');
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
-var resumer = require('resumer');
+var through = require('through2');
+var duplexer = require('duplexer2');
 var visualwidth = require('visualwidth');
+var Duplex = require('readable-stream/duplex');
 
 module.exports = function (opts) {
     return new Menu(opts || {});
 }
+
+inherits(Menu, EventEmitter);
 
 function Menu (opts) {
     var self = this;
@@ -42,14 +46,22 @@ function Menu (opts) {
         x: self.width + self.padding.left + self.padding.right
     };
     
-    self.charm = opts.charm || createCharm();
-    self.stream = self.charm.pipe(resumer());
+    self._input = through(
+        function (buf, enc, next) {
+            self._ondata(buf);
+            next();
+        },
+        function () { self.emit('close') }
+    );
+    self._output = through();
+    self.charm = opts.charm || createCharm({
+        input: self._input
+    });
+    self.charm.pipe(self._output);
+    
+    self.stream = self.charm.pipe(through());
     self.charm.display('reset');
     self.charm.display('bright');
-    
-    self._ondata = function (buf) {
-        self._ondataHandler(buf);
-    };
     
     process.nextTick(function () {
         self._ticked = true;
@@ -57,15 +69,13 @@ function Menu (opts) {
         self._draw();
     });
     
-    process.stdin.on('data', self._ondata);
-    process.stdin.setRawMode(true);
-    process.stdin.resume();
+    //process.stdin.on('data', self._ondata);
+    //process.stdin.setRawMode(true);
+    //process.stdin.resume();
 };
 
-inherits(Menu, EventEmitter);
-
 Menu.prototype.createStream = function () {
-    return this.stream;
+    return duplexer(this._input, this._output);
 };
 
 Menu.prototype.add = function (label, cb) {
@@ -114,12 +124,11 @@ Menu.prototype.close = function (opts) {
     if (!opts.keepalive) {
         process.stdin.setRawMode(false);
     }
-    process.stdin.removeListener('data', this._ondata);
+    this._input.end();
     this.charm.cursor(true);
     this.charm.display('reset');
     this.charm.position(1, this.y + 1);
     this.charm.end();
-    process.stdin.pause();
 };
 
 Menu.prototype.reset = function () {
@@ -179,7 +188,7 @@ Menu.prototype._drawRow = function (index) {
     this.charm.write(item.label + Array(Math.max(0, len)).join(' '));
 };
 
-Menu.prototype._ondataHandler = function ondata (buf) {
+Menu.prototype._ondata = function ondata (buf) {
     var codes = [].join.call(buf, '.');
     if (codes === '27.91.65' || codes === '27.79.65' || codes === '107') {
     // up || up (iOS) || k
@@ -196,9 +205,9 @@ Menu.prototype._ondataHandler = function ondata (buf) {
         this._drawRow(this.selected);
     }
     else if (codes === '3' || codes == '113') { // ^C || q
-        process.stdin.setRawMode(false);
+        this._input.end();
+        this._output.end();
         this.charm.reset();
-        process.exit();
     }
     else if (codes === '13') { // enter
         this.emit('select', this.items[this.selected].label, this.selected);
