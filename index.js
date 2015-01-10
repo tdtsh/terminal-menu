@@ -57,11 +57,15 @@ function Menu (opts) {
     self.charm = opts.charm || createCharm({
         input: self._input
     });
+    self.charm.on('error', function () {});
     self.charm.pipe(self._output);
     
     self.stream = self.charm.pipe(through());
-    self.charm.display('reset');
-    self.charm.display('bright');
+    try {
+        self.charm.display('reset');
+        self.charm.display('bright');
+    }
+    catch (e) {}
     
     process.nextTick(function () {
         self._ticked = true;
