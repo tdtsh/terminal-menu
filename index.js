@@ -115,8 +115,7 @@ Menu.prototype.jump = function (name) {
     }
 };
 
-Menu.prototype.close = function (opts) {
-    if (!opts) opts = {};
+Menu.prototype.close = function () {
     this._input.end();
     this.charm.cursor(true);
     this.charm.display('reset');

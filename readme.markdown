@@ -15,24 +15,24 @@ menu.write('-------------------------\n');
 
 menu.add('ADD TRANSACTION INVOICE');
 menu.add('BUSINESS INTELLIGENCE');
-menu.add('ACCOUNTS PAYABLE', function (label, index) {
-    menu.close();
-    console.log('LABEL=', label);
-    console.log('INDEX=', index);
-    process.exit();
-});
+menu.add('ACCOUNTS PAYABLE');
 menu.add('LEDGER BOOKINGS');
 menu.add('INDICATOR CHART METRICS');
 menu.add('BACKUP DATA TO FLOPPY DISK');
 menu.add('RESTORE FROM FLOPPY DISK');
-menu.add('欢迎来到substack的编码世界');
 menu.add('EXIT');
 
 menu.on('select', function (label) {
     menu.close();
     console.log('SELECTED: ' + label);
 });
-menu.createStream().pipe(process.stdout);
+process.stdin.pipe(menu.createStream()).pipe(process.stdout);
+
+process.stdin.setRawMode(true);
+menu.on('close', function () {
+    process.stdin.setRawMode(false);
+    process.stdin.end();
+});
 ```
 
 # methods
@@ -70,19 +70,17 @@ string and index when selected.
 
 Write a message to the menu.
 
-## menu.createStream()
+## var stream = menu.createStream()
 
-Return the stream to be piped to a terminal.
+Return a duplex `stream` to wire up input and output.
 
 ## menu.reset()
 
 Reset the terminal, clearing all contents.
 
-## menu.close(opts={})
+## menu.close()
 
 Unregister all listeners and put the terminal back to its original state.
-
-Set `opts.keepalive` to `true` to keep raw mode enabled on `process.stdin`.
 
 # events
 
