@@ -4,7 +4,6 @@ var EventEmitter = require('events').EventEmitter;
 var through = require('through2');
 var duplexer = require('duplexer2');
 var visualwidth = require('visualwidth');
-var Duplex = require('readable-stream/duplex');
 
 module.exports = function (opts) {
     return new Menu(opts || {});
