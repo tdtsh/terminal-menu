@@ -1,6 +1,6 @@
 {
-  "name": "terminal-menu",
-  "version": "2.1.1",
+  "name": "@tdtsh/terminal-menu",
+  "version": "2.1.2",
   "description": "retro ansi terminal menus for serious 80s technicolor business",
   "main": "index.js",
   "dependencies": {

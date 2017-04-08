@@ -123,7 +123,6 @@ Menu.prototype.close = function () {
     this.charm.cursor(true);
     this.charm.display('reset');
     this.charm.position(1, this.y + 1);
-    this.charm.end();
 };
 
 Menu.prototype.reset = function () {
